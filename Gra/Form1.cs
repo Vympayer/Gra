@@ -33,8 +33,17 @@ namespace Gra
                 for (int j = 0; j < ELEMENT_RZAD; j++)
                 { a[i + j].set_height(BRICk_HEIGHT);
                     a[i + j].set_width(BRICK_WIDTH);
+                    a[i + j].set_pos_x(pictureBox1.Location.X + j * BRICK_WIDTH);
+                    a[i + j].set_pos_y(pictureBox1.Location.Y + i * BRICk_HEIGHT);
+
 
                 }
+           // a[7] = null;
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
