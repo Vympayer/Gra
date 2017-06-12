@@ -51,6 +51,7 @@
             this.Nowa_Gra.TabIndex = 1;
             this.Nowa_Gra.Text = "Nowa Gra";
             this.Nowa_Gra.UseVisualStyleBackColor = true;
+            this.Nowa_Gra.Click += new System.EventHandler(this.Nowa_Gra_Click);
             // 
             // Form1
             // 

@@ -13,37 +13,68 @@ namespace Gra
 {
     public partial class Form1 : Form
     {
-        private Figury[] Bricks = new Figury[28];
+        int[] cegielki = new int[40];
+       
         public Form1()
         {
             InitializeComponent();
+            generate_bricks();
+            pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-        private void generate_bricks(Figury[] a)
-        { int LICZBA_RZEDOW = 4;
-            int ELEMENT_RZAD = 7;
-            int BRICk_HEIGHT = 10;
-            int BRICK_WIDTH = 20;
-
-            for (int i = 0; i < LICZBA_RZEDOW; i++)
-                for (int j = 0; j < ELEMENT_RZAD; j++)
-                { a[i + j].set_height(BRICk_HEIGHT);
-                    a[i + j].set_width(BRICK_WIDTH);
-                    a[i + j].set_pos_x(pictureBox1.Location.X + j * BRICK_WIDTH);
-                    a[i + j].set_pos_y(pictureBox1.Location.Y + i * BRICk_HEIGHT);
+        private void generate_bricks()
+        {
 
 
-                }
-           // a[7] = null;
+
+            for (int j = 0; j < 40; j++)
+                cegielki[j] = 1;
+                   
+
+
+                
+            // a[7] = null; 
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics canvas = e.Graphics;
+
+           
+               
+                    Brush BrickColour= Brushes.Red;
+
+
+            int BRICk_HEIGHT = 50;
+            int BRICK_WIDTH = 100;
+            //Draw bricks
+           
+                 for (int j = 0; j < 40; j++)
+                 { if (cegielki[j]==1)
+                     canvas.FillRectangle(BrickColour,
+                         new Rectangle(20+(BRICK_WIDTH+5)*(j%10),
+                                         20+ (BRICk_HEIGHT+2) * (j / 10),
+                                         BRICK_WIDTH, BRICk_HEIGHT));
+                 }
+
+             
+            
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        // pbCanvas to cały czas picturebox
+        private void Nowa_Gra_Click(object sender, EventArgs e)
+        {
+            //pictureBox1.Invalidate();
+            
         }
     }
 }
