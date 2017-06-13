@@ -12,9 +12,11 @@ namespace Gra
         int pos_y;
         int height;
         int width;
-
-        public Figury(int a, int b, int c, int d) { pos_x = a; pos_y = b;height = c;width = d; }
-        public Figury() { pos_x = 10; pos_y = 10; height = 10; width = 10; }
+        public int right;
+        public bool moving;
+        
+        public Figury(int a, int b, int c, int d) { pos_x = a; pos_y = b;height = c;width = d; right = 0; moving = false; }
+        public Figury() { pos_x = 10; pos_y = 10; height = 10; width = 10; right = 0; moving = false; }
 
         public int get_pos_x()
         {
