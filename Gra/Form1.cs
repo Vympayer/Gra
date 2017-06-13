@@ -19,6 +19,9 @@ namespace Gra
         Figury paletka;
         int speed_up;
         int speed_right;
+        int BRICk_HEIGHT = 45;
+        int BRICK_WIDTH = 90;
+
 
         public Form1()
         {
@@ -30,7 +33,8 @@ namespace Gra
             speed_right = 2;
             InitializeComponent();
             StartGame();
-            generate_bricks();
+            for (int j = 0; j < 40; j++)
+                cegielki[j] = 1;
             pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
 
         }
@@ -46,34 +50,25 @@ namespace Gra
            
 
         }
-        private void generate_bricks()
-        {
-
-
-
-            for (int j = 0; j < 40; j++)
-                cegielki[j] = 1;
-
-            
-
-                
-            // a[7] = null; 
-        }
+        
 
         private void UpdateScreen(object sender, EventArgs e)
 
         {
 
-           if ((paletka.right==1)&&(paletka.moving==true))
-                paletka.set_pos_x(paletka.get_pos_x() + 5); // Zepsułem i się rusza
-            if ((paletka.right == -1)&&(paletka.moving==true))
-                paletka.set_pos_x(paletka.get_pos_x() - 5); // Zepsułem i się rusza
+            if ((paletka.right == 1) && (paletka.moving == true))
+                paletka.set_pos_x(paletka.get_pos_x() + 5);
+            if ((paletka.right == -1) && (paletka.moving == true))
+                paletka.set_pos_x(paletka.get_pos_x() - 5);
 
             ball.set_pos_x(ball.get_pos_x() + speed_right);
             ball.set_pos_y(ball.get_pos_y() + speed_up);
 
             wykryj_kolizje();
-
+            for (int i = 0; i < 40; i++)
+            {
+                cegielki[i] = wykryj_kolizje_cegielka(cegielki[i], i);
+            }
             pictureBox1.Invalidate();
 
         }
@@ -87,8 +82,7 @@ namespace Gra
                     Brush BrickColour= Brushes.Red;
 
 
-            int BRICk_HEIGHT = 45;
-            int BRICK_WIDTH = 90;
+            
             //Draw bricks
            
                  for (int j = 0; j < 40; j++)
@@ -187,16 +181,37 @@ namespace Gra
             }
             if (ball.get_pos_y() <= pictureBox1.Top)
             {
-                speed_right = -speed_up;
-            }
-            if (ball.get_pos_y()+50 <= pictureBox1.Bottom)
-            {
                 speed_up = -speed_up;
+            }
+            if (ball.get_pos_y()+50 >= pictureBox1.Bottom)
+            {
+                timer1.Stop();
+                label1.Visible = true;
+
             }
 
             if ((paletka.get_pos_x() <= pictureBox1.Left) || (paletka.get_pos_x() >= pictureBox1.Right))
                 paletka.moving = false;
 
+        }
+
+        private int wykryj_kolizje_cegielka(int brick, int i)
+        {
+
+
+            if ((brick == 1)&&((!(((ball.get_pos_y()+50 >= 6 + (BRICk_HEIGHT + 2) * ((i / 10)+1)) && (ball.get_pos_y() <= 6 + (BRICk_HEIGHT + 2) * (i / 10) )) && ((ball.get_pos_x() >= 20 + (BRICK_WIDTH + 5) * (i % 10)) && (ball.get_pos_x() <= 20 + (BRICK_WIDTH + 5) * ((i % 10) - 1)))))))
+            {
+
+                return 1;
+                
+            }
+            else
+            {
+                speed_up = -speed_up;
+                return 0;
+            }
+            
+            
         }
     }
 }
