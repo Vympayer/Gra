@@ -17,9 +17,12 @@ namespace Gra
         
         Figury ball;
         Figury paletka;
-       
+        
+        /*
         int BRICk_HEIGHT = 45;
         int BRICK_WIDTH = 90;
+        Cegielki[] cegielki=new Cegielki[40];
+        */
 
         public Form1()
         {
@@ -27,10 +30,11 @@ namespace Gra
             timer1.Interval = 20;
             timer1.Start();
             timer1.Tick += UpdateScreen;
-            
+           
             InitializeComponent();
             StartGame();
-            
+            //for (int i = 0; i < 40; i++)
+               // cegielki[i] = new Cegielki(20 + (BRICK_WIDTH + 2) * (i % 10), 6 + (BRICk_HEIGHT + 2) * (i / 10));
             pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
 
         }
@@ -39,11 +43,11 @@ namespace Gra
         private void StartGame()
         {
 
-            ball = new Figury(300, 300, 50, 50);
-            paletka = new Figury(480, 600, 20, 100);
-           
+            ball = new Figury(300, 300, 50, 50,true, 2,2);
+            paletka = new Figury(480, 600, 20, 100,false,0,0);
 
-           
+          
+
 
         }
         
@@ -52,19 +56,17 @@ namespace Gra
 
         {
 
-            if ((paletka.right == 1) && (paletka.moving == true))
-                paletka.set_pos_x(paletka.get_pos_x() + 5);
-            if ((paletka.right == -1) && (paletka.moving == true))
-                paletka.set_pos_x(paletka.get_pos_x() - 5);
+            if  (paletka.get_moving() == true)
+                paletka.set_pos_x(paletka.get_pos_x() + 5*paletka.get_right());
 
-            ball.set_pos_x(ball.get_pos_x() + speed_right);
-            ball.set_pos_y(ball.get_pos_y() + speed_up);
+            ball.set_pos_x(ball.get_pos_x() + ball.get_right());
+            ball.set_pos_y(ball.get_pos_y() + ball.get_up());
 
             wykryj_kolizje();
-            for (int i = 0; i < 40; i++)
+           /* for (int i = 0; i < 40; i++)
             {
                 cegielki[i] = wykryj_kolizje_cegielka(cegielki[i], i);
-            }
+            }*/
             pictureBox1.Invalidate();
 
         }
@@ -81,13 +83,13 @@ namespace Gra
             
             //Draw bricks
            
-                 for (int j = 0; j < 40; j++)
-                 { if (cegielki[j]==1)
+             /*   for (int j = 0; j < 40; j++)
+                 { if (cegielki[j]!=null)
                      canvas.FillRectangle(BrickColour,
-                         new Rectangle(20+(BRICK_WIDTH+5)*(j%10),
-                                         6+ (BRICk_HEIGHT+2) * (j / 10),
-                                         BRICK_WIDTH, BRICk_HEIGHT));
-                 }
+                         new Rectangle((cegielki[i].up_left_x,
+                                         cegielki[j].up_left_y,
+                                         BRICK_WIDTH, BRICk_HEIGHT)));
+                 }*/
             //Draw ball
             Brush ballcolour = Brushes.Blue;
             canvas.FillEllipse(ballcolour,
@@ -138,46 +140,56 @@ namespace Gra
 
         private void button2_Click(object sender, EventArgs e)
         {
-            paletka.moving = false;
+            paletka.set_moving(false);
+            paletka.set_right(0);
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            paletka.moving = true;
-            paletka.right = -1;
+            paletka.set_moving(true);
+            if (paletka.get_right() < 0)
+                paletka.set_right(paletka.get_right() - 1);
+            else
+                paletka.set_right(-1);
+
         }
 
        
 
         private void button3_Click(object sender, EventArgs e)
         {
-            paletka.moving = true;
-            paletka.right = 1;
+            paletka.set_moving(true);
+            if (paletka.get_right() > 0)
+                paletka.set_right(paletka.get_right() + 1);
+            else
+                paletka.set_right(1);
         }
 
         private void wykryj_kolizje()
         {
-            
 
-         
-              
+            Random rnd = new Random();
+
+
             if (((ball.get_pos_y() <= paletka.get_pos_y()) && (ball.get_pos_y()+50 >= paletka.get_pos_y())) && ((ball.get_pos_x() >= paletka.get_pos_x()) && (ball.get_pos_x() <= paletka.get_pos_x()+100)))    //kolizja z rakieta
             {
                
-                speed_up = -speed_up;                                                              
+                ball.set_up(-((int)rnd.Next(2, 8)));
+                paletka.set_up(paletka.get_up() + 1);
+                label2.Text = paletka.get_up().ToString();
                 
             }
             if (ball.get_pos_x() <= pictureBox1.Left)
             {
-                speed_right = -speed_right;
+                ball.set_right(((int) rnd.Next(1, 8)));
             }
 
             if (ball.get_pos_x()+50 >= pictureBox1.Right)
             {
-                speed_right = -speed_right;
+                ball.set_right(-((int)rnd.Next(1, 8)));
             }
             if (ball.get_pos_y() <= pictureBox1.Top)
-            {
-                speed_up = -speed_up;
+            {; 
+                ball.set_up(((int)rnd.Next(2, 8)));
             }
             if (ball.get_pos_y()+50 >= pictureBox1.Bottom)
             {
@@ -186,28 +198,11 @@ namespace Gra
 
             }
 
-            if ((paletka.get_pos_x() <= pictureBox1.Left) || (paletka.get_pos_x() >= pictureBox1.Right))
-                paletka.moving = false;
+            if ((paletka.get_pos_x() <= pictureBox1.Left) || (paletka.get_pos_x()+100 >= pictureBox1.Right))
+                paletka.set_moving(false);
 
         }
 
-        private int wykryj_kolizje_cegielka(int brick, int i)
-        {
-
-
-            if ((brick == 1)&&((!(((ball.get_pos_y()+50 >= 6 + (BRICk_HEIGHT + 2) * ((i / 10)+1)) && (ball.get_pos_y() <= 6 + (BRICk_HEIGHT + 2) * (i / 10) )) && ((ball.get_pos_x() >= 20 + (BRICK_WIDTH + 5) * (i % 10)) && (ball.get_pos_x() <= 20 + (BRICK_WIDTH + 5) * ((i % 10) - 1)))))))
-            {
-
-                return 1;
-                
-            }
-            else
-            {
-                speed_up = -speed_up;
-                return 0;
-            }
-            
-            
-        }
+        
     }
 }
