@@ -14,14 +14,12 @@ namespace Gra
 {
     public partial class Form1 : Form
     {
-        int[] cegielki = new int[40];
+        
         Figury ball;
         Figury paletka;
-        int speed_up;
-        int speed_right;
+       
         int BRICk_HEIGHT = 45;
         int BRICK_WIDTH = 90;
-
 
         public Form1()
         {
@@ -29,12 +27,10 @@ namespace Gra
             timer1.Interval = 20;
             timer1.Start();
             timer1.Tick += UpdateScreen;
-            speed_up = 2;
-            speed_right = 2;
+            
             InitializeComponent();
             StartGame();
-            for (int j = 0; j < 40; j++)
-                cegielki[j] = 1;
+            
             pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
 
         }
